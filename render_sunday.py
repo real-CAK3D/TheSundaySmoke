@@ -39,8 +39,7 @@ def back(date, no):
         '<div class="gum"><span>SUNDAY EDITION · THE GARDEN</span></div>'
         '<div class="pb-body"><a class="seal" href="/" aria-label="Back to The Corner Chronicle" title="Back to The Corner Chronicle">%s</a><h2 class="pb-title">The Sunday Smoke</h2>'
         '<p>Put together by Ganja from the week\'s Double Wides.<br>The funnies: every strip drawn this week, all in one place.</p>'
-        '%s<p class="pb-code">%s · No. %s</p><p><a href="../funnies.html">The funnies archive ›</a> · <a href="../archive.html">Back issues ›</a> · '
-        '<a href="/">🏠 The Corner Chronicle</a></p></div>')
+        '%s<p class="pb-code">%s · No. %s</p><p><a href="../funnies.html">The funnies archive ›</a> · <a href="../archive.html">Back issues ›</a></p></div>')
         % (SEAL, back_codes("https://github.com/real-CAK3D/TheSundaySmoke", "TheSundaySmoke"), date, e(no)), " hardcover back")
 
 
