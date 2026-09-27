@@ -35,7 +35,7 @@ def shell(title, body, cls="stand pub-sun"):
 
 
 def topbar(title, sub):
-    return ('<header class="stand-top"><a class="stand-home" href="./" aria-label="This week\'s paper">📰</a><div><h1>%s</h1>'
+    return ('<header class="stand-top"><a class="stand-home ns-home" href="/" aria-label="The Newsstand" title="The Newsstand">🏠</a><a class="stand-home" href="./" aria-label="This week\'s paper">📰</a><div><h1>%s</h1>'
             '<div class="stand-sub">%s</div></div><a class="stand-home" href="archive.html" aria-label="Back issues">🗂</a></header>' % (e(title), e(sub)))
 
 
@@ -99,13 +99,12 @@ def build_index():
         ed = load(os.path.join(ROOT, "drafts", eds[0] + ".json"))
         json.dump({"paper": "The Sunday Smoke", "date": eds[0], "title": (ed.get("cover") or {}).get("title") or "", "url": "issues/%s.html" % eds[0],
                    "issues": eds[:10]}, open(os.path.join(SITE, "latest.json"), "w"), ensure_ascii=False)
-    else:
-        body = ('%s<main class="paper"><div class="box"><h2>The first Sunday Smoke is on its way</h2><p>Every Sunday at 7 AM Ganja rolls up the week: '
-                'what happened, what\'s coming, things to do around town, the weekly ledger — and the funnies.</p>'
-                '<p><a href="funnies.html">Read the funnies archive while you wait ›</a></p></div></main>' % topbar("The Sunday Smoke", "the whole week, rolled up"))
-        open(os.path.join(SITE, "index.html"), "w").write(shell("The Sunday Smoke", body))
-        n = sum(len((load(f).get("funnies") or {}).get("strips") or []) for f in glob.glob(os.path.join(ROOT, "strips", "*.json")))
-        json.dump({"paper": "The Sunday Smoke", "date": dt.date.today().isoformat(), "title": "First issue this Sunday — %d strip%s saved up so far" % (n, "" if n == 1 else "s"),
+    else:   # between issues: a preview paper with the week's strips so far
+        import render_sunday
+        html, n, sunday = render_sunday.preview()
+        open(os.path.join(SITE, "index.html"), "w").write(html)
+        json.dump({"paper": "The Sunday Smoke", "date": dt.date.today().isoformat(),
+                   "title": "Next issue %s — %d strip%s saved up so far" % (sunday.strftime("%a %b %-d"), n, "" if n == 1 else "s"),
                    "url": "", "issues": []}, open(os.path.join(SITE, "latest.json"), "w"))
 
 

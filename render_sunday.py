@@ -8,7 +8,7 @@ Uses its own copy of The Double Wide's flipbook (flipbook.py) with its own masth
 import datetime as dt, glob, json, os, sys
 
 import flipbook as fb
-from flipbook import e, mug, para, story, page, strips_block, SEAL
+from flipbook import e, mug, para, story, page, strips_block, SEAL, back_codes
 
 fb.CSS_FILE = "sunday-smoke.css"
 ROOT = fb.ROOT
@@ -39,8 +39,9 @@ def back(date, no):
         '<div class="gum"><span>SUNDAY EDITION · THE GARDEN</span></div>'
         '<div class="pb-body"><a class="seal" href="/" aria-label="Back to the Newsstand" title="Back to the Newsstand">%s</a><h2 class="pb-title">The Sunday Smoke</h2>'
         '<p>Put together by Ganja from the week\'s Double Wides.<br>The funnies: every strip drawn this week, all in one place.</p>'
-        '<p class="pb-code">%s · No. %s</p><p><a href="../funnies.html">The funnies archive ›</a> · <a href="../archive.html">Back issues ›</a></p></div>')
-        % (SEAL, date, e(no)), " hardcover back")
+        '%s<p class="pb-code">%s · No. %s</p><p><a href="../funnies.html">The funnies archive ›</a> · <a href="../archive.html">Back issues ›</a> · '
+        '<a href="/">🏠 The Newsstand</a></p></div>')
+        % (SEAL, back_codes("https://github.com/real-CAK3D/TheSundaySmoke", "TheSundaySmoke"), date, e(no)), " hardcover back")
 
 
 def week_ledger(date):
@@ -138,6 +139,28 @@ def render(ed):
     return fb.book(pages, date=date, no=no, lists={}, paper="The Sunday Smoke", motto="The whole week, rolled up",
                    gum="SUNDAY EDITION · ALL THE WEEK FIT TO READ · FUNNIES INSIDE", price="PRICE: TWO PINCHES",
                    delivered="DELIVERED SUNDAY BY GANJA", flap="Sunday edition · Compiled by The Gardiner · Rolled by Ganja", body_class="pub-sun")
+
+
+def preview(today=None):
+    """Between Sundays: the cover, what's coming, and every strip drawn so far this week."""
+    today = today or dt.date.today()
+    sunday = today + dt.timedelta(days=(6 - today.weekday()) % 7 or 7) if today.weekday() == 6 else today + dt.timedelta(days=(6 - today.weekday()) % 7)
+    no = (sunday - dt.date(2026, 9, 27)).days // 7 + 1
+    strips = week_strips(today.isoformat())
+    n = sum(len(f.get("strips") or []) for _, f in strips)
+    pages = [page("Coming Sunday", '<div class="box"><h2>The next Sunday Smoke: %s</h2><p>Every Sunday at 7 AM Ganja rolls up the week: what happened, '
+                  'what\'s coming, things to do around town, the weekly ledger — and every comic strip drawn that week.</p>'
+                  '<p><b>%d strip%s saved up so far</b> — they\'re on the next pages.</p><p><a href="funnies.html">The funnies archive ›</a> · '
+                  '<a href="archive.html">Back issues ›</a> · <a href="/">🏠 The Newsstand</a></p></div>'
+                  % (e(sunday.strftime("%A, %B %-d")), n, "" if n == 1 else "s"))]
+    for day, fun in strips:
+        pages.append(page("The Funnies — %s" % dt.date.fromisoformat(day).strftime("%A"),
+                          '<div class="fn-dayhead">%s</div>' % e(dt.date.fromisoformat(day).strftime("%A, %B %-d")) + strips_block(fun), " comic-page"))
+    pages = [cover(no, sunday, "Coming %s — %d strip%s saved up so far" % (sunday.strftime("%A, %B %-d"), n, "" if n == 1 else "s"))] + pages + [back(sunday.isoformat(), no)]
+    html = fb.book(pages, date=sunday.isoformat(), no=no, lists={}, paper="The Sunday Smoke", motto="The whole week, rolled up",
+                   gum="SUNDAY EDITION · ALL THE WEEK FIT TO READ · FUNNIES INSIDE", price="PRICE: TWO PINCHES",
+                   delivered="DELIVERED SUNDAY BY GANJA", flap="Sunday edition · Compiled by The Gardiner · Rolled by Ganja", body_class="pub-sun")
+    return html.replace('href="../', 'href="').replace('src="../', 'src="'), n, sunday
 
 
 def main():
