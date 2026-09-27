@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# After Ganja files The Sunday Smoke: print the issue (with the week's strips), rebuild the pages and ring the Newsstand's bell.
+# After Ganja files The Sunday Smoke: print the issue (with the week's strips), rebuild the pages and ring The Corner Chronicle's bell.
 set -u
 D="$HOME/.hermes/garden/sunday-smoke"; PY="$HOME/.hermes/hermes-agent/venv/bin/python"; T=$(TZ=America/New_York date +%F)
 F="$D/drafts/$T.json"; [ -f "$F" ] || { echo "no Sunday Smoke draft for $T"; exit 0; }

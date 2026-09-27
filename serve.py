@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The Sunday Smoke web server (Tailscale-only; mounted at /sunday-smoke/ under the Newsstand). Static pages.
+"""The Sunday Smoke web server (Tailscale-only; mounted at /sunday-smoke/ under The Corner Chronicle). Static pages.
 Usage: serve.py <site_dir> <host> <port>"""
 import os, sys
 import gardenweb as gw

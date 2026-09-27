@@ -26,7 +26,7 @@ def load(path):
 def cover(no, d, teaser):
     return page("The Sunday Smoke", (
         '<div class="gum"><span>SUNDAY EDITION · ALL THE WEEK FIT TO READ</span></div>'
-        '<div class="pc-top"><a class="seal" href="/" aria-label="Back to the Newsstand" title="Back to the Newsstand">%s</a><div class="ear">No. %s<br>%s<br><b>%s</b><br>%s</div></div>'
+        '<div class="pc-top"><a class="seal" href="/" aria-label="Back to The Corner Chronicle" title="Back to The Corner Chronicle">%s</a><div class="ear">No. %s<br>%s<br><b>%s</b><br>%s</div></div>'
         '<div class="flag"><div class="est">EST. 2026 · THE GARDEN · LEWISTON, ME</div><h1>The<br>Sunday Smoke</h1><div class="motto">The whole week, rolled up</div></div>'
         '<div class="pc-band"><span>WEEK IN REVIEW</span><span>THE WEEK&#39;S FUNNIES</span><span>AROUND TOWN</span></div>'
         '<div class="pc-teaser"><div class="kicker">This week\'s big story</div><b>%s</b></div>'
@@ -37,10 +37,10 @@ def cover(no, d, teaser):
 def back(date, no):
     return page("Back Page", (
         '<div class="gum"><span>SUNDAY EDITION · THE GARDEN</span></div>'
-        '<div class="pb-body"><a class="seal" href="/" aria-label="Back to the Newsstand" title="Back to the Newsstand">%s</a><h2 class="pb-title">The Sunday Smoke</h2>'
+        '<div class="pb-body"><a class="seal" href="/" aria-label="Back to The Corner Chronicle" title="Back to The Corner Chronicle">%s</a><h2 class="pb-title">The Sunday Smoke</h2>'
         '<p>Put together by Ganja from the week\'s Double Wides.<br>The funnies: every strip drawn this week, all in one place.</p>'
         '%s<p class="pb-code">%s · No. %s</p><p><a href="../funnies.html">The funnies archive ›</a> · <a href="../archive.html">Back issues ›</a> · '
-        '<a href="/">🏠 The Newsstand</a></p></div>')
+        '<a href="/">🏠 The Corner Chronicle</a></p></div>')
         % (SEAL, back_codes("https://github.com/real-CAK3D/TheSundaySmoke", "TheSundaySmoke"), date, e(no)), " hardcover back")
 
 
@@ -151,7 +151,7 @@ def preview(today=None):
     pages = [page("Coming Sunday", '<div class="box"><h2>The next Sunday Smoke: %s</h2><p>Every Sunday at 7 AM Ganja rolls up the week: what happened, '
                   'what\'s coming, things to do around town, the weekly ledger — and every comic strip drawn that week.</p>'
                   '<p><b>%d strip%s saved up so far</b> — they\'re on the next pages.</p><p><a href="funnies.html">The funnies archive ›</a> · '
-                  '<a href="archive.html">Back issues ›</a> · <a href="/">🏠 The Newsstand</a></p></div>'
+                  '<a href="archive.html">Back issues ›</a> · <a href="/">🏠 The Corner Chronicle</a></p></div>'
                   % (e(sunday.strftime("%A, %B %-d")), n, "" if n == 1 else "s"))]
     for day, fun in strips:
         pages.append(page("The Funnies — %s" % dt.date.fromisoformat(day).strftime("%A"),
