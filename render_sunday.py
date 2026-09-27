@@ -26,9 +26,9 @@ def load(path):
 def cover(no, d, teaser):
     return page("The Sunday Smoke", (
         '<div class="gum"><span>SUNDAY EDITION · ALL THE WEEK FIT TO READ</span></div>'
-        '<div class="pc-top"><div class="seal">%s</div><div class="ear">No. %s<br>%s<br><b>%s</b><br>%s</div></div>'
+        '<div class="pc-top"><a class="seal" href="/" aria-label="Back to the Newsstand" title="Back to the Newsstand">%s</a><div class="ear">No. %s<br>%s<br><b>%s</b><br>%s</div></div>'
         '<div class="flag"><div class="est">EST. 2026 · THE GARDEN · LEWISTON, ME</div><h1>The<br>Sunday Smoke</h1><div class="motto">The whole week, rolled up</div></div>'
-        '<div class="pc-band"><span>WEEK IN REVIEW</span><span>THE FUNNIES</span><span>AROUND TOWN</span></div>'
+        '<div class="pc-band"><span>WEEK IN REVIEW</span><span>THE WEEK&#39;S FUNNIES</span><span>AROUND TOWN</span></div>'
         '<div class="pc-teaser"><div class="kicker">This week\'s big story</div><b>%s</b></div>'
         '<div class="pc-open">Unfold the paper ›</div>') % (SEAL, e(no), d.strftime("%a"), d.strftime("%b %-d"), d.strftime("%Y"), e(teaser)),
         " hardcover")
@@ -37,8 +37,8 @@ def cover(no, d, teaser):
 def back(date, no):
     return page("Back Page", (
         '<div class="gum"><span>SUNDAY EDITION · THE GARDEN</span></div>'
-        '<div class="pb-body"><div class="seal">%s</div><h2 class="pb-title">The Sunday Smoke</h2>'
-        '<p>Put together by Ganja from the week\'s Double Wides.<br>The funnies are drawn fresh every Sunday.</p>'
+        '<div class="pb-body"><a class="seal" href="/" aria-label="Back to the Newsstand" title="Back to the Newsstand">%s</a><h2 class="pb-title">The Sunday Smoke</h2>'
+        '<p>Put together by Ganja from the week\'s Double Wides.<br>The funnies: every strip drawn this week, all in one place.</p>'
         '<p class="pb-code">%s · No. %s</p><p><a href="../funnies.html">The funnies archive ›</a> · <a href="../archive.html">Back issues ›</a></p></div>')
         % (SEAL, date, e(no)), " hardcover back")
 
@@ -74,6 +74,18 @@ def week_ledger(date):
             '<tbody>%s</tbody></table></div></div></div>'
             % (days[0], days[-1], bars, fb._k(sum(v for _, v in tot)), agent_rows or "<li>—</li>",
                pay_rows or '<tr><td colspan="3">No payroll yet.</td></tr>'))
+
+
+def week_strips(date):
+    """The week's daily strips (kept by take_strips.py), Monday through Sunday."""
+    d = dt.date.fromisoformat(date)
+    out = []
+    for i in range(6, -1, -1):
+        day = (d - dt.timedelta(days=i)).isoformat()
+        fun = load(os.path.join(ROOT, "strips", day + ".json")).get("funnies") or {}
+        if fun.get("strips"):
+            out.append((day, fun))
+    return out
 
 
 def week_weather(date):
@@ -115,8 +127,9 @@ def render(ed):
                  for x in ed.get("events") or [] if isinstance(x, dict))
     pages.append(page("Around Town", '<div class="box events"><h2>Around Town This Week</h2><p class="small">Lewiston · Auburn · nearby — tap one for details</p>%s</div>'
                       % (ev or '<p class="small">No events found this week.</p>')))
-    if (ed.get("funnies") or {}).get("strips"):
-        pages.append(page("The Funnies", strips_block(ed["funnies"]), " comic-page"))
+    for day, fun in week_strips(date):   # every strip drawn this week, one page per day
+        pages.append(page("The Funnies — %s" % dt.date.fromisoformat(day).strftime("%A"),
+                          '<div class="fn-dayhead">%s</div>' % e(dt.date.fromisoformat(day).strftime("%A, %B %-d")) + strips_block(fun), " comic-page"))
     pages.append(page("The Weekly Ledger", week_ledger(date)))
     col = ed.get("column") or {}
     if col.get("body"):

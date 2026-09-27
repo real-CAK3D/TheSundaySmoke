@@ -55,7 +55,7 @@ def sync_portraits():
 def build_funnies():
     """Every strip ever printed: the Sunday Smoke's, plus the ones that ran in The Double Wide before the funnies moved here."""
     rows = []
-    for f in glob.glob(os.path.join(ROOT, "drafts", "*.json")):
+    for f in glob.glob(os.path.join(ROOT, "strips", "*.json")):   # the daily strips kept for Sunday
         m = re.fullmatch(r"(\d{4}-\d{2}-\d{2})\.json", os.path.basename(f))
         fun = load(f).get("funnies") or {}
         if m and fun.get("strips"):
@@ -96,11 +96,17 @@ def build_index():
     if eds:
         pg = open(os.path.join(SITE, "issues", eds[0] + ".html")).read()
         open(os.path.join(SITE, "index.html"), "w").write(pg.replace('href="../', 'href="').replace('src="../', 'src="'))
+        ed = load(os.path.join(ROOT, "drafts", eds[0] + ".json"))
+        json.dump({"paper": "The Sunday Smoke", "date": eds[0], "title": (ed.get("cover") or {}).get("title") or "", "url": "issues/%s.html" % eds[0],
+                   "issues": eds[:10]}, open(os.path.join(SITE, "latest.json"), "w"), ensure_ascii=False)
     else:
         body = ('%s<main class="paper"><div class="box"><h2>The first Sunday Smoke is on its way</h2><p>Every Sunday at 7 AM Ganja rolls up the week: '
                 'what happened, what\'s coming, things to do around town, the weekly ledger — and the funnies.</p>'
                 '<p><a href="funnies.html">Read the funnies archive while you wait ›</a></p></div></main>' % topbar("The Sunday Smoke", "the whole week, rolled up"))
         open(os.path.join(SITE, "index.html"), "w").write(shell("The Sunday Smoke", body))
+        n = sum(len((load(f).get("funnies") or {}).get("strips") or []) for f in glob.glob(os.path.join(ROOT, "strips", "*.json")))
+        json.dump({"paper": "The Sunday Smoke", "date": dt.date.today().isoformat(), "title": "First issue this Sunday — %d strip%s saved up so far" % (n, "" if n == 1 else "s"),
+                   "url": "", "issues": []}, open(os.path.join(SITE, "latest.json"), "w"))
 
 
 if __name__ == "__main__":
