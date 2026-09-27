@@ -15,9 +15,9 @@ Part of the Garden's papers, all read through **[The Corner Chronicle](https://g
 | `build_sunday.py` | Home page, back issues and the funnies archive. |
 | `flipbook.py` | A copy of The Double Wide's flipbook renderer, restyled by `sunday-smoke.css`. |
 | `prompts/sunday_prompt.txt` | Ganja's instructions and the issue schema. |
-| `deliver.sh` | Draw → print → ring the Newsstand's bell. |
+| `deliver.sh` | Draw → print → ring The Corner Chronicle's bell. |
 | `gardenweb.py` | The small shared web-server kit every Garden paper carries its own copy of. |
 
 ## Running
 
-Runs Sundays at 07:00 Eastern through the Garden's relay; served at `/sunday-smoke/` under the Newsstand. Each project is Linux-first (`%-d` date formatting) and expects a Hermes install on the same machine.
+Runs Sundays at 07:00 Eastern through the Garden's relay; served at `/sunday-smoke/` under The Corner Chronicle. Each project is Linux-first (`%-d` date formatting) and expects a Hermes install on the same machine.
