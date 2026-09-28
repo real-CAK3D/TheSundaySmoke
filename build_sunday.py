@@ -86,7 +86,7 @@ def build_archive():
     items = "".join('<li><a href="issues/%s.html">%s</a></li>' % (x, nice(x)) for x in issues())
     body = ('%s<main class="paper"><div class="box arch"><h2>The Sunday Smoke</h2><ul class="archive">%s</ul></div>'
             '<div class="box arch"><h2>Also</h2><ul class="archive"><li><a href="funnies.html">😂 The funnies archive</a></li>'
-            '<li><a href="/double-wide/">🗞 The Double Wide</a> <span class="small">(daily)</span></li><li><a href="/">🏪 The Corner Chronicle</a></li></ul></div></main>'
+            '<li><a href="/double-wide/">🗞 The Double Wide</a> <span class="small">(daily)</span></li></ul></div></main>'
             % (topbar("Back Issues", "every Sunday Smoke"), items or "<li>The first Sunday Smoke comes this Sunday.</li>"))
     open(os.path.join(SITE, "archive.html"), "w").write(shell("The Sunday Smoke — Back Issues", body))
 
@@ -103,7 +103,8 @@ def build_index():
         import render_sunday
         html, n, sunday = render_sunday.preview()
         open(os.path.join(SITE, "index.html"), "w").write(html)
-        json.dump({"paper": "The Sunday Smoke", "date": dt.date.today().isoformat(),
+        last = dt.date.today() - dt.timedelta(days=(dt.date.today().weekday() + 1) % 7)   # dated like the last Sunday paper, not today
+        json.dump({"paper": "The Sunday Smoke", "date": last.isoformat(),
                    "title": "Next issue %s — %d strip%s saved up so far" % (sunday.strftime("%a %b %-d"), n, "" if n == 1 else "s"),
                    "url": "", "issues": []}, open(os.path.join(SITE, "latest.json"), "w"))
 
